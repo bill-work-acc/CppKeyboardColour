@@ -26,7 +26,7 @@ private:
 	{
 		std::unique_ptr<IAnimation> pAnimation = std::make_unique<TAnimation>();
 
-		for (size_t i = 0; i < pAnimation->Size(); ++i)
+		for (uint32_t i = 0; i < pAnimation->Size(); ++i)
 		{
 			if (auto frame = pAnimation->GetFrame(i))
 			{

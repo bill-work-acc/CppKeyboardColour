@@ -15,8 +15,8 @@
 // rgb(255, 120, 120) Brown
 //
 
-constexpr float STEPS = 40.0f;
-constexpr size_t FRAME_DURATION_MS = 25;
+constexpr uint32_t STEPS = 40;
+constexpr uint32_t FRAME_DURATION_MS = 25;
 
 FreshBreatheAnimation::FreshBreatheAnimation()
 {

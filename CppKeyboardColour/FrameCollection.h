@@ -18,7 +18,7 @@ public:
 
 	std::optional<Frame> GetFrame(uint32_t idx);
 
-	inline uint32_t Size() const { return m_frames.size(); }
+	inline uint32_t Size() const { return static_cast<uint32_t>(m_frames.size()); }
 	
 	~FrameCollection() = default;
 

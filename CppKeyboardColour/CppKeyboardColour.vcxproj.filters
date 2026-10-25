@@ -67,6 +67,12 @@
     <Filter Include="Source Files\Console\Translator">
       <UniqueIdentifier>{41c0af14-5474-4620-842c-869433965545}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Fan">
+      <UniqueIdentifier>{2e4f3b9a-6c1d-4a7e-9f2b-1d8c5a3e7b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fan">
+      <UniqueIdentifier>{7b1c4d2e-9a3f-4e8b-8c5d-2f6a1b9e4c73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -153,6 +159,9 @@
     <ClInclude Include="Channels\InsydeDeviceChannel.h">
       <Filter>Header Files\Channels</Filter>
     </ClInclude>
+    <ClInclude Include="Channels\DchuApi.h">
+      <Filter>Header Files\Channels</Filter>
+    </ClInclude>
     <ClInclude Include="Channels\WmiDeviceChannel.h">
       <Filter>Header Files\Channels</Filter>
     </ClInclude>
@@ -203,6 +212,18 @@
     </ClInclude>
     <ClInclude Include="Command\ThemeCommandLine.h">
       <Filter>Header Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Command\FanCommandLine.h">
+      <Filter>Header Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Command\Help.h">
+      <Filter>Header Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Fan\FanController.h">
+      <Filter>Header Files\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="Fan\stdafx.h">
+      <Filter>Header Files\Fan</Filter>
     </ClInclude>
     <ClInclude Include="Utils\RegUtils.h">
       <Filter>Header Files\Utils</Filter>
@@ -374,6 +395,9 @@
     <ClCompile Include="Channels\InsydeDeviceChannel.cpp">
       <Filter>Source Files\Channels</Filter>
     </ClCompile>
+    <ClCompile Include="Channels\DchuApi.cpp">
+      <Filter>Source Files\Channels</Filter>
+    </ClCompile>
     <ClCompile Include="Channels\WmiDeviceChannel.cpp">
       <Filter>Source Files\Channels</Filter>
     </ClCompile>
@@ -397,6 +421,15 @@
     </ClCompile>
     <ClCompile Include="Command\ThemeCommandLine.cpp">
       <Filter>Source Files\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Command\FanCommandLine.cpp">
+      <Filter>Source Files\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Command\Help.cpp">
+      <Filter>Source Files\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Fan\FanController.cpp">
+      <Filter>Source Files\Fan</Filter>
     </ClCompile>
     <ClCompile Include="Utils\WbemClassEnumerator.cpp">
       <Filter>Source Files\Utils</Filter>
@@ -457,10 +490,5 @@
     <ResourceCompile Include="CppKeyboardColour.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\Users\joshs\Pictures\keyboard.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

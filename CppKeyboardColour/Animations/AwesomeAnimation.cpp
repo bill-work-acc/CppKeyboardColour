@@ -1,9 +1,5 @@
 // Created by DeviceIoControl
 
-#ifndef _AWESOME_ANIMATION_H_
-#define _AWESOME_ANIMATION_H_
-#endif
-
 #include "stdafx.h"
 #include "AwesomeAnimation.h"
 #include "Animations.h"

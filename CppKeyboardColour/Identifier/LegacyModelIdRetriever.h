@@ -5,7 +5,11 @@
 
 namespace Detail 
 {
-	using T_GetProductID_PCI = DWORD(*__stdcall)();
+#if defined(_M_X64) || defined(_M_ARM64)
+	using T_GetProductID_PCI = DWORD(*)();
+#else
+	using T_GetProductID_PCI = DWORD(__stdcall*)();
+#endif
 } // namespace Detail
 
 class LegacyModelIdRetriever 

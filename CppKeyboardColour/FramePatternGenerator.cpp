@@ -15,9 +15,9 @@ FrameCollection FramePatternGenerator::GenerateAscendingPattern(DeviceMask devic
 		const auto channelBrightnessFactor = std::sin(((90.0f / steps) * i) * (MATH_PI / 180.0f));
 
 		const auto currentColour = factory.Create(
-			(targetColour[INDEX_COLOUR_RED] * channelBrightnessFactor),
-			(targetColour[INDEX_COLOUR_GREEN] * channelBrightnessFactor),
-			(targetColour[INDEX_COLOUR_BLUE] * channelBrightnessFactor)
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_RED] * channelBrightnessFactor),
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_GREEN] * channelBrightnessFactor),
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_BLUE] * channelBrightnessFactor)
 		);
 
 		frames.AddFrame(devices, Zone::ALL, currentColour, stepTimeMs);
@@ -36,9 +36,9 @@ FrameCollection FramePatternGenerator::GenerateDescendingPattern(DeviceMask devi
 		const auto channelBrightnessFactor = std::sin(((90.0f / steps) * i) * (MATH_PI / 180.0f));
 
 		const auto currentColour = factory.Create(
-			(targetColour[INDEX_COLOUR_RED] * channelBrightnessFactor),
-			(targetColour[INDEX_COLOUR_GREEN] * channelBrightnessFactor),
-			(targetColour[INDEX_COLOUR_BLUE] * channelBrightnessFactor)
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_RED] * channelBrightnessFactor),
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_GREEN] * channelBrightnessFactor),
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_BLUE] * channelBrightnessFactor)
 		);
 
 		frames.AddFrame(devices, Zone::ALL, currentColour, stepTimeMs);
@@ -99,7 +99,7 @@ FrameCollection FramePatternGenerator::GenerateColourBlendRotation(DeviceMask de
 	auto rightZoneFrames = this->DoGenerateColourBlend(devices, Zone::RIGHT, startColours[ZoneToArrayIndex(Zone::RIGHT)], endColours[ZoneToArrayIndex(Zone::RIGHT)], steps, stepTimeMs);
 
 	// Interleave the zoned frames to simulate a single frame with multiple individual zone colours.
-	for (size_t i = 0; i < steps; ++i)
+	for (uint32_t i = 0; i < steps; ++i)
 	{
 		frames.TryAddFrame(leftZoneFrames.GetFrame(i));
 		frames.TryAddFrame(midZoneFrames.GetFrame(i));
@@ -138,9 +138,9 @@ FrameCollection FramePatternGenerator::DoGenerateBreathePattern(DeviceMask devic
 		const auto channelBrightnessFactor = std::sin(((180.0f / steps) * i) * (MATH_PI / 180.0f));
 
 		const auto currentColour = factory.Create(
-			(targetColour[INDEX_COLOUR_RED] * channelBrightnessFactor),
-			(targetColour[INDEX_COLOUR_GREEN] * channelBrightnessFactor),
-			(targetColour[INDEX_COLOUR_BLUE] * channelBrightnessFactor)
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_RED] * channelBrightnessFactor),
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_GREEN] * channelBrightnessFactor),
+			static_cast<uint8_t>(targetColour[INDEX_COLOUR_BLUE] * channelBrightnessFactor)
 		);
 
 		frames.AddFrame(devices, zone, currentColour, stepTimeMs);
@@ -157,9 +157,9 @@ FrameCollection FramePatternGenerator::GenerateColourWavePattern(DeviceMask devi
 	auto midZoneBreathe = this->DoGenerateBreathePattern(devices, Zone::MID, targetColour, steps, stepTimeMs);
 	auto rightZoneBreathe = this->DoGenerateBreathePattern(devices, Zone::RIGHT, targetColour, steps, stepTimeMs);
 
-	for (size_t i = 0; i < (steps * 1.66f); ++i)
+	for (uint32_t i = 0; i < (steps * 1.66f); ++i)
 	{
-		if (i >= 0 && i <= steps) 
+		if (i <= steps)
 		{
 			frames.TryAddFrame(leftZoneBreathe.GetFrame(i));
 		}

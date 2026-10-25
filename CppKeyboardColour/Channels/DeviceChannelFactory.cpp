@@ -8,8 +8,9 @@
 #include "DeviceChannelFactory.h"
 
 DeviceChannelFactory::DeviceChannelFactory(KeyboardType kbType, bool enableChannelMonitoring)
-	: m_pDbgChannel(std::make_shared<DebugDeviceChannel>(kbType)),
-	m_enableChannelMonitoring(enableChannelMonitoring)
+	: m_kbType(kbType),
+	m_enableChannelMonitoring(enableChannelMonitoring),
+	m_pDbgChannel(std::make_shared<DebugDeviceChannel>(kbType))
 {
 }
 
@@ -24,7 +25,7 @@ std::shared_ptr<IDeviceChannel> DeviceChannelFactory::Create(DeviceChannelType c
 		return std::make_shared<DeviceChannel>(std::make_shared<WmiDeviceChannel>(), m_enableChannelMonitoring ? m_pDbgChannel : nullptr);
 		
 	case DeviceChannelType::Insyde:
-		return std::make_shared<DeviceChannel>(std::make_shared<InsydeDeviceChannel>(), m_enableChannelMonitoring ? m_pDbgChannel : nullptr);
+		return std::make_shared<DeviceChannel>(std::make_shared<InsydeDeviceChannel>(m_kbType), m_enableChannelMonitoring ? m_pDbgChannel : nullptr);
 	}
 
 	return nullptr;

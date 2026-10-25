@@ -4,24 +4,23 @@
 
 #include "IDeviceChannel.h"
 #include "../ColourFactory.h"
+#include "../Common/KeyboardType.h"
+#include "DchuApi.h"
 
 class InsydeDeviceChannel
 	: public IDeviceChannel
 {
-private:
-	using T_SetDCHU_Data = DWORD(__stdcall*)(DWORD command, const UINT8* buffer, DWORD length);
-	using T_WriteAppSettings = DWORD(__stdcall*)(DWORD dwPage, DWORD dwOffset, DWORD dwLength, const UINT8* pInBuffer);
-
 public:
-	InsydeDeviceChannel();
-	~InsydeDeviceChannel() override;
+	explicit InsydeDeviceChannel(KeyboardType kbType);
+	~InsydeDeviceChannel() override = default;
 
 	bool SendCode(uint32_t code) override;
 	DeviceChannelType QueryType() const override;
 
 private:
+	KeyboardType m_kbType;
 	ColourFactory m_colourFactory{};
-	HMODULE m_hInsydeDHCU = nullptr;
-	T_SetDCHU_Data m_pfnSetDCHU_Data = nullptr;
-	T_WriteAppSettings m_pfnWriteAppSettings = nullptr;
+	DchuApi m_dchu{};
+
+	bool WriteKeyboardColour(uint32_t code);
 };

@@ -13,6 +13,7 @@ public:
 	std::shared_ptr<IDeviceChannel> Create(DeviceChannelType channelType) const;
 
 private:
+	KeyboardType m_kbType;
 	bool m_enableChannelMonitoring = false;
 	std::shared_ptr<IDeviceChannel> m_pDbgChannel;
 };

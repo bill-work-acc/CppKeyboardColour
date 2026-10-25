@@ -13,7 +13,8 @@ enum class CmdOperation
 	Backlight,
 	UserColour,
 	UserColour3,
-	Lightbar
+	Lightbar,
+	Fan
 };
 
 enum class BacklightType

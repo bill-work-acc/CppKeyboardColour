@@ -181,5 +181,10 @@ CmdOperation ProcessCmdOperation(const std::vector<std::wstring>& cmdLines)
 		return CmdOperation::Lightbar;
 	}
 
+	if (CommandLine::Contains(L"fan", cmdLines))
+	{
+		return CmdOperation::Fan;
+	}
+
 	return CmdOperation::FlagInvalid;
 }

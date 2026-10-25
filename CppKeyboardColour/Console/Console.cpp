@@ -16,6 +16,11 @@ Console::Console(LogLevel level)
 	m_pLogger = std::make_unique<ConsoleLogger>();
 }
 
+void Console::SetLogLevel(LogLevel level)
+{
+	m_baseLoglevel = level;
+}
+
 void Console::SetTitle(const std::wstring& title) 
 {
 	const auto translatedTitle = m_pTranslator->Translate(title).append(L"\n");
@@ -24,14 +29,19 @@ void Console::SetTitle(const std::wstring& title)
 	m_pLogger->Write(LogLevel::None, translatedTitle);
 }
 
+void Console::WriteLine(const std::wstring& message)
+{
+	m_pLogger->Write(LogLevel::None, message);
+}
+
 void Console::Hide() 
 {
-	ShowWindow(m_hWnd, this->IsVisible() ? SW_HIDE : SW_NORMAL);
+	ShowWindow(m_hWnd, SW_HIDE);
 }
 
 void Console::Show() 
 {
-	ShowWindow(m_hWnd, !this->IsVisible() ? SW_SHOW : SW_NORMAL);
+	ShowWindow(m_hWnd, SW_SHOW);
 }
 
 bool Console::IsVisible() const

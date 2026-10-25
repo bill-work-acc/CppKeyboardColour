@@ -8,10 +8,14 @@
 class Console
 {
 public:
-	Console(LogLevel level = LogLevel::Debug);
+	Console(LogLevel level = LogLevel::Info);
 	~Console() = default;
 
+	void SetLogLevel(LogLevel level);
 	void SetTitle(const std::wstring& title);
+
+	// Writes a raw line without the [INFO]/[WARNING] prefix or log-level filtering.
+	void WriteLine(const std::wstring& message);
 
 	void Hide();
 	void Show();
@@ -19,12 +23,10 @@ public:
 	template<typename... _TArgs>
 	bool Log(LogLevel level, const std::wstring& format, _TArgs&&... args)
 	{
-		if (this->IsVisible())
-		{
-			return this->WriteInternal(level, format, std::forward<_TArgs>(args)...);
-		}
-
-		return false;
+		// Do not gate logging on the console window's visibility. GetConsoleWindow()
+		// and GWL_STYLE can report a non-visible window under Windows Terminal even
+		// though the console is usable, which previously suppressed all log output.
+		return this->WriteInternal(level, format, std::forward<_TArgs>(args)...);
 	}
 
 	bool IsVisible() const;

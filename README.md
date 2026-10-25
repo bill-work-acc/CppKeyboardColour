@@ -12,6 +12,11 @@ This is a cleaner, more organized, and efficient version of the initial program.
   - **RGB 3-zone keyboards**.
   - **RGB 1-zone keyboards**.
   - **RGB Lightbars**.
+- **Fan Control (Insyde DCHU systems):**
+  - 🌡️ **Fan Status:** Read fan count, mode, offset, RPM, duty cycle and temperature.
+  - 🎛️ **Fan Modes:** Switch between auto, quiet, max, Max-Q and custom profiles.
+  - 📈 **Custom Curves:** Read and set the 4-point CPU/GPU fan curve, with `--dry-run` preview.
+  - 🌀 **Maintenance:** Adjust the automatic fan offset, run anti-dust and restore firmware defaults.
 - **Predefined Animated Effects:**
   - 🌈 **Fading Colors:** Smooth color transitions (predefined themes).
   - 🎥 **Optimized Animations:** Enhanced visual effects using animation objects.
@@ -53,12 +58,22 @@ The following commands are supported and can be executed via **Command Prompt or
 Extract the program zip and run the commands **as an administrator**. To execute the `.exe` files, prepend the `.\` before the command.
 
 ```bash
-.\CLEVO_KeyboardColour.exe theme [theme] --speed [speed] [--dmm] [--hide]
-.\CLEVO_KeyboardColour.exe inbuilt [theme] [--dmm] [--hide] (3-Zone keyboards only)
-.\CLEVO_KeyboardColour.exe backlight [on/off] [--dmm] [--hide]
-.\CLEVO_KeyboardColour.exe colour [hexColour] [--dmm] [--hide]
-.\CLEVO_KeyboardColour.exe colours [hexColour] [hexColour] [hexColour] [--dmm] [--hide] (3-Zone keyboards only)
-.\CLEVO_KeyboardColour.exe lightbar [hexColour] [--dmm] [--hide]
+.\CLEVO_KeyboardColour.exe theme [theme] --speed [speed] [--dmm] [--hide] [--debug]
+.\CLEVO_KeyboardColour.exe inbuilt [theme] [--dmm] [--hide] [--debug] (3-Zone keyboards only)
+.\CLEVO_KeyboardColour.exe backlight [on/off] [--dmm] [--hide] [--debug]
+.\CLEVO_KeyboardColour.exe colour [hexColour] [--dmm] [--hide] [--debug]
+.\CLEVO_KeyboardColour.exe colours [hexColour] [hexColour] [hexColour] [--dmm] [--hide] [--debug] (3-Zone keyboards only)
+.\CLEVO_KeyboardColour.exe lightbar [hexColour] [--dmm] [--hide] [--debug]
+.\CLEVO_KeyboardColour.exe fan status
+.\CLEVO_KeyboardColour.exe fan mode [auto/quiet/max/maxq/custom]
+.\CLEVO_KeyboardColour.exe fan offset [0-100]
+.\CLEVO_KeyboardColour.exe fan dust
+.\CLEVO_KeyboardColour.exe fan reset
+.\CLEVO_KeyboardColour.exe fan curve show
+.\CLEVO_KeyboardColour.exe fan curve set [cpu/gpu1/gpu2/all] [t2] [d2] [t3] [d3] [--dry-run]
+.\CLEVO_KeyboardColour.exe fan help
+.\CLEVO_KeyboardColour.exe fan curve help
+.\CLEVO_KeyboardColour.exe help
 ```
 ---
 
@@ -132,6 +147,100 @@ Extract the program zip and run the commands **as an administrator**. To execute
   💙 Turns the lightbar Blue.
 
 This command works in the same way as the `colour` command - For more info, please read the 'Custom Colour Operations' section.
+
+---
+
+### 🌀 Fan Control (InsydeDCHU.dll):
+
+Fan control is available on systems whose BIOS exposes the Insyde DCHU fan interface. It uses the same **InsydeDCHU.dll** as the single-zone keyboard control, so the DLL must be in the same directory as `CLEVO_KeyboardColour.exe`. The DLL and executable architectures must also match (use the x64 build with the x64 DLL).
+
+⚠️ **Warning:** Fan control is model-dependent and experimental. Use `fan status` first to check which features your firmware reports, and use `fan reset` to return to the firmware defaults. Do not use a quiet profile under sustained heavy load; the firmware's thermal protection should still ramp the fans, but use this feature at your own risk.
+
+- **Read fan status (read-only):**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan status
+  ```
+  Displays the fan count, current fan mode, fan offset, CPU/GPU RPM, duty cycle, temperature and the support flags reported by the firmware.
+
+- **Set the fan mode:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan mode auto
+  .\CLEVO_KeyboardColour.exe fan mode quiet
+  .\CLEVO_KeyboardColour.exe fan mode max
+  .\CLEVO_KeyboardColour.exe fan mode maxq
+  .\CLEVO_KeyboardColour.exe fan mode custom
+  ```
+  🌬️ `auto` uses the firmware's automatic fan curve. `quiet` requests the quiet/silent profile. `max` runs the fans at full speed. `maxq` selects the Max-Q profile (if supported). `custom` uses the custom fan curve currently stored in the firmware/OEM application.
+
+- **Adjust the automatic fan offset:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan offset 20
+  ```
+  Applies a 0-100 fan offset to the automatic fan curve. Higher values make the fans ramp up sooner; `0` leaves the curve unchanged.
+
+- **Run the anti-dust cycle (if supported):**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan dust
+  ```
+  🌀 Starts the firmware anti-dust routine. The fans may run at full speed for a short period.
+
+- **Restore the firmware fan defaults:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan reset
+  ```
+  Restores the default fan table and switches back to `auto` mode. This is the only reset command; there is no separate `fan curve reset`.
+
+- **Read the current custom curve:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan curve show
+  ```
+  Shows the current mode, offset and the 4-point curve for each fan present on the system.
+
+- **Set a custom curve:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan curve set cpu 55 50 75 80
+  .\CLEVO_KeyboardColour.exe fan curve set gpu1 60 45 80 85
+  .\CLEVO_KeyboardColour.exe fan curve set all 55 50 75 80
+  ```
+  The curve has four points:
+
+  ```text
+  T1/D1 (fixed) -> T2/D2 (adjustable) -> T3/D3 (adjustable) -> T4/D4 (fixed)
+  ```
+
+  - `T` = temperature in °C.
+  - `D` = fan duty/speed in %.
+  - `T1/D1` is the fixed start point defined by the firmware/model (for example `40 °C / 35%`).
+  - `T2/D2` and `T3/D3` are the adjustable points.
+  - `T4/D4` is the fixed end point, normally `100 °C / 100%`.
+
+  Example: `fan curve set cpu 55 50 75 80` means:
+
+  ```text
+  40 °C / 35%   (fixed start)
+  55 °C / 50%   (T2/D2)
+  75 °C / 80%   (T3/D3)
+  100 °C / 100% (fixed end)
+  ```
+
+  The actual fixed `T1/D1` values are read from the current table and can differ by model; use `fan curve show` to see them. Setting a curve writes the EC fan table, switches to `custom` mode and persists the OEM page. Use `fan mode auto` to return to the firmware curve, or `fan reset` to restore the firmware default table and `auto` mode.
+
+- **Preview a curve without writing:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe fan curve set cpu 55 50 75 80 --dry-run
+  ```
+  Prints the current and proposed curves, the fan-table bytes and the page-4 changes without writing anything.
+
+- **Help:**
+  ```bash
+  .\CLEVO_KeyboardColour.exe help
+  .\CLEVO_KeyboardColour.exe /?
+  .\CLEVO_KeyboardColour.exe fan help
+  .\CLEVO_KeyboardColour.exe fan /?
+  .\CLEVO_KeyboardColour.exe fan curve help
+  .\CLEVO_KeyboardColour.exe fan curve /?
+  ```
+  `help`/`/?` shows general help; `fan help`/`fan /?` shows fan help only; `fan curve help`/`fan curve /?` shows curve help only. Help still runs under the application's administrator manifest for now.
 
 ---
 
@@ -295,6 +404,19 @@ This command works in the same way as the `colour` command - For more info, plea
 
 ---
 
+### 🐞 Debug Logging:
+
+  Add `--debug` to any command to include detailed `[DEBUG]` messages, such as DCHU return values, keyboard codes and channel information. Debug output is hidden by default.
+
+  ```bash
+  .\CLEVO_KeyboardColour.exe backlight on --debug
+  .\CLEVO_KeyboardColour.exe fan status --debug
+  ```
+
+  **Note:** `--dmm` (Device Monitor Mode) also enables debug logging.
+
+---
+
 ### 🪄 Background Modes:
 
 If you wish to run this program on (in the background), there are multiple approaches that can be used to hide the CLI Window. 
@@ -325,11 +447,11 @@ If you wish to run this program on (in the background), there are multiple appro
    - Search for "Command Prompt" in the Windows search bar.
    - Right-click and select **Run as Administrator**.
 
-3. **Again, be sure that the **InsydeDCHU.dll** file is in the same directory as `CLEVO_KeyboardColour.exe` if you're using a **Single-Zone** keyboard**.
+3. **Again, be sure that the **InsydeDCHU.dll** file is in the same directory as `CLEVO_KeyboardColour.exe` if you're using a **Single-Zone** keyboard or fan control**.
 
 4. Run the desired command using the syntax:
    ```
-   .\CLEVO_KeyboardColour.exe theme/inbuilt/backlight/lightbar/colour(s) [argument] [--speed <speed>] [--dmm] [--hide]
+   .\CLEVO_KeyboardColour.exe theme/inbuilt/backlight/lightbar/colour(s)/fan [argument] [--speed <speed>] [--dmm] [--hide] [--debug]
    ```
 
 ---
@@ -375,6 +497,12 @@ To turn off the keyboard backlight, run:
 ```
 NOTE: This command does not support the `--once` argument.
 
+To check the fan status on an Insyde DCHU system, run:
+```bash
+.\CLEVO_KeyboardColour.exe fan status
+```
+NOTE: This command is read-only. Use `fan reset` to restore the firmware fan defaults after experimenting with the fan modes.
+
 ---
 
 ## ❗Common Errors
@@ -384,6 +512,13 @@ The section will address all of the most common errors and provide troubleshooti
 ⚠️ **Error "Cannot load InsydeDCHU.dll..."**
 
 - If you're using a **Single-Zone** keyboard system, please ensure that the **InsydeDCHU.dll** file is in the same directory as `CLEVO_KeyboardColour.exe`.
+- Fan control uses the same DLL; ensure the DLL architecture matches the executable (x64 build with the x64 DLL).
+
+⚠️ **Error "Failed to read fan status..." or "Failed to persist the fan mode..."**
+
+- Ensure the Insyde DCHU driver/ACPI interface is available. It is usually installed by the OEM Control Center.
+- Ensure **InsydeDCHU.dll** is in the same directory as `CLEVO_KeyboardColour.exe` and matches the executable architecture.
+- Run `fan status` to check which fan features your firmware reports.
 
 ⚠️ **Error "Cannot load clevomof.dll..."**
 
@@ -411,7 +546,14 @@ The section will address all of the most common errors and provide troubleshooti
   - **RGB Lightbar** lighting.
   - For **1-zone keyboards**, the **InsydeDCHU.dll** file must be in the same directory as `CLEVO_KeyboardColour.exe`.
   - For **3-zone keyboards**, the **CLEVOMOF.dll** must be registered using the "Scripts\RegisterClevoMof.cmd" script on 1st use.
+- **Fan control:** Requires a firmware that exposes the Insyde DCHU fan interface. Run `fan status` to check support. The **InsydeDCHU.dll** file must be in the same directory as `CLEVO_KeyboardColour.exe`.
 - **Administrator Permissions:** This program requests for administrator privileges. Please ensure you accept the Windows UAC prompt to avoid WMI failures.
+
+---
+
+## 🧱 Building from Source
+
+See [BUILD.md](BUILD.md) for Visual Studio 2022 / MSBuild build instructions on Windows 11, including the required SDK/toolset, output paths, `InsydeDCHU.dll` placement, and troubleshooting.
 
 ---
 

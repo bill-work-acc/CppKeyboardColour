@@ -1,0 +1,15 @@
+# Visual Studio build output
+.vs/
+Build/
+
+# Proprietary OEM runtime dependency (copy next to the executable)
+InsydeDCHU.dll
+
+# Local compiler/linker artifacts
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.idb
+*.exp
+*.tlog
